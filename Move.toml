@@ -1,0 +1,17 @@
+[package]
+name = "RockPaperScissors_f"
+version = "1.0.0"
+authors = []
+
+[addresses]
+metaschool = "0xbaa1293d8663b24e48ad2592a8f30e024cb7d82883f6e36dd388b1c207ae81b3"
+std = "0x1"
+
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "mainnet"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-dependencies]

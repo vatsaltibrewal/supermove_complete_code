@@ -150,32 +150,6 @@ const App: React.FC = () => {
   const [transactionInProgress, setTransactionInProgress] =
     useState<boolean>(false);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (!isActive) return;
-      if (event.key >= "0" && event.key <= "9") {
-        setInput((prev) => prev + event.key);
-      } else if (event.key === "Backspace") {
-        setInput((prev) => prev.slice(0, -1));
-      } else if (event.key === "Enter") {
-        handleOperationClick("=");
-      } else if (["+", "-", "*", "/"].includes(event.key)) {
-        setInput((prev) => prev + ` ${event.key} `);
-      } else if (event.key === "c" || event.key === "C") {
-        setInput("");
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isActive]);
-
-  const handleButtonClick = (value: string) => {
-    setInput(input + value);
-  };
-
   const handleOperationClick = async (operation: string) => {
     if (operation === "Rock" || operation === "Paper" || operation === "Scissors") {
       setInput(` ${operation} `);

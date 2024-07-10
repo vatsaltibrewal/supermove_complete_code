@@ -195,7 +195,7 @@ const App: React.FC = () => {
       console.log("Toggling active state: " + isActive);
       const payload: InputTransactionData = {
         data: {
-          function: `${moduleAddress}::${moduleName}::create_calculator`,
+          function: `${moduleAddress}::${moduleName}::createGame`,
           functionArguments: [],
         },
       };

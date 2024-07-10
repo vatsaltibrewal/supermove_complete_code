@@ -175,6 +175,7 @@ const App: React.FC = () => {
 
   const handleOperationClick = async (operation: string) => {
     if (operation === "Rock" || operation === "Paper" || operation === "Scissors") {
+      setInput(` ${operation} `);
       try {
         if (!account) return;
         let functionName = "duel"
@@ -206,7 +207,7 @@ const App: React.FC = () => {
         setTransactionInProgress(false);
       }
     } else {
-      setInput(input + ` ${operation} `);
+      setInput(` ${operation} `);
     }
   };
 

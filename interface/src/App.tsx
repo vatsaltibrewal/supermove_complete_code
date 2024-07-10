@@ -49,28 +49,6 @@ const CenteredWrapper = styled.div`
   background-color: #f0f0f0;
 `;
 
-const GameWrapper = styled.div`
-  width: 550px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 30px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Display = styled.div`
-  background-color: #e0e0e0;
-  color: black;
-  font-size: 18px;
-  padding: 20px;
-  border-radius: 15px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-`;
-
 const DisplayComputerHeading = styled.div`
   background-color: transparent;
   color: black;
@@ -85,9 +63,28 @@ const DisplayComputerHeading = styled.div`
 const ResultBox = styled.div<{
   color?: string;
 }>`
-  background-color: ${({ color }) => (color ? "#4CAF50" : "#f44336")};
+  background-color: "#4CAF50";
   color: white;
   font-size: 25px;
+  padding: 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+const GameWrapper = styled.div`
+  width: 300px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const Display = styled.div`
+  background-color: #e0e0e0;
+  color: black;
+  font-size: 18px;
   padding: 20px;
   border-radius: 15px;
   font-weight: bold;
@@ -150,55 +147,85 @@ const App: React.FC = () => {
   const [transactionInProgress, setTransactionInProgress] =
     useState<boolean>(false);
 
-    const toggleActiveState = async () => {
-      setIsActive(!isActive);
-      if (!account) return;
-      if (!isActive) {
-        console.log("Toggling active state: " + isActive);
-        const payload: InputTransactionData = {
-          data: {
-            function: `${moduleAddress}::${moduleName}::createGame`,
-            functionArguments: [],
-          },
-        };
-  
-        const response = await signAndSubmitTransaction(payload);
-        console.log(response);
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isActive) return;
+      if (event.key >= "0" && event.key <= "9") {
+        setInput((prev) => prev + event.key);
+      } else if (event.key === "Backspace") {
+        setInput((prev) => prev.slice(0, -1));
+      } else if (event.key === "Enter") {
+        handleOperationClick("=");
+      } else if (["+", "-", "*", "/"].includes(event.key)) {
+        setInput((prev) => prev + ` ${event.key} `);
+      } else if (event.key === "c" || event.key === "C") {
+        setInput("");
       }
     };
 
-    const handleOperationClick = async (operation: string) => {
-      setInput(`${operation}`);
-        try {
-          if (!account) return;
-  
-          setTransactionInProgress(true);
-  
-          const payload: InputTransactionData = {
-            data: {
-              function: `${moduleAddress}::${moduleName}::duel`,
-              functionArguments: [operation],
-            },
-          };
-  
-          const response = await signAndSubmitTransaction(payload);
-  
-          console.log(response);
-  
-          const resultData = await client.getAccountResource({
-            accountAddress: account?.address,
-            resourceType: `${moduleAddress}::${moduleName}::RockPaperScissors_f`,
-          });
-  
-          console.log(resultData);
-          setResult(resultData.duel_result.toString());
-          setComputerSelection(resultData.computer_selection.toString())
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setTransactionInProgress(false);
-        }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
     };
+  }, [isActive]);
+
+  const handleButtonClick = (value: string) => {
+    setInput(input + value);
+  };
+
+  const handleOperationClick = async (operation: string) => {
+    if (operation === "Rock" || operation === "Paper" || operation === "Scissors") {
+      try {
+        if (!account) return;
+        let functionName = "duel"
+
+        setTransactionInProgress(true);
+
+        const payload: InputTransactionData = {
+          data: {
+            function: `${moduleAddress}::${moduleName}::${functionName}`,
+            functionArguments: [operation],
+          },
+        };
+
+        const response = await signAndSubmitTransaction(payload);
+
+        console.log(response);
+
+        const resultData = await client.getAccountResource({
+          accountAddress: account?.address,
+          resourceType: `${moduleAddress}::${moduleName}::DuelResult`,
+        });
+
+        console.log(resultData);
+        setResult(resultData.duel_result.toString());
+        setComputerSelection(resultData.computer_selection.toString())
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setTransactionInProgress(false);
+      }
+    } else {
+      setInput(input + ` ${operation} `);
+    }
+  };
+
+  const toggleActiveState = async () => {
+    setIsActive(!isActive);
+    if (!account) return;
+    if (!isActive) {
+      console.log("Toggling active state: " + isActive);
+      const payload: InputTransactionData = {
+        data: {
+          function: `${moduleAddress}::${moduleName}::create_calculator`,
+          functionArguments: [],
+        },
+      };
+
+      const response = await signAndSubmitTransaction(payload);
+      console.log(response);
+    }
+  };
 
   const connectedView = () => {
     return (
@@ -222,21 +249,21 @@ const App: React.FC = () => {
             {/* <Button color="#FF33FF" onClick={() => setInput(input + '  ')} disabled={!isActive}>^</Button> */}
             <OperationButton
               onClick={() => {handleOperationClick("Rock");}}
-              disabled={!isActive}
+              disabled={!isActive || transactionInProgress}
             >
               Rock
             </OperationButton>
             <OperationButton
               onClick={() => handleOperationClick("Paper")}
-              disabled={!isActive}
+              disabled={!isActive || transactionInProgress}
             >
               Paper
             </OperationButton>
             <OperationButton
-              onClick={() => handleOperationClick("Scissor")}
-              disabled={!isActive}
+              onClick={() => handleOperationClick("Scissors")}
+              disabled={!isActive || transactionInProgress}
             >
-              Scissor
+              Scissors
             </OperationButton>    
           </ButtonGrid>
         </GameWrapper><br></br><br></br>
@@ -266,7 +293,6 @@ const App: React.FC = () => {
         <WalletSelector />
       </WalletWrapper>
       {connected ? connectedView() : notConnectedView()}
-      {/* {connectedView()} */}
     </WindowWrapper>
   );
 };

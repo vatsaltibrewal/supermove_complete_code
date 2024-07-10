@@ -49,6 +49,28 @@ const CenteredWrapper = styled.div`
   background-color: #f0f0f0;
 `;
 
+const GameWrapper = styled.div`
+  width: 550px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Display = styled.div`
+  background-color: #e0e0e0;
+  color: black;
+  font-size: 18px;
+  padding: 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
 const DisplayComputerHeading = styled.div`
   background-color: transparent;
   color: black;
@@ -66,25 +88,6 @@ const ResultBox = styled.div<{
   background-color: "#4CAF50";
   color: white;
   font-size: 25px;
-  padding: 20px;
-  border-radius: 15px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-`;
-
-const GameWrapper = styled.div`
-  width: 300px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 30px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-`;
-
-const Display = styled.div`
-  background-color: #e0e0e0;
-  color: black;
-  font-size: 18px;
   padding: 20px;
   border-radius: 15px;
   font-weight: bold;

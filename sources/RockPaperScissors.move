@@ -1,4 +1,4 @@
-module metaschool::RockPaperScissors_f {
+module metaschool_1::RockPaperScissors_f {
     use std::string::{String,utf8};
     use std::signer;
     use aptos_framework::randomness;
@@ -21,7 +21,7 @@ module metaschool::RockPaperScissors_f {
         }
     }
 
-    public fun get_result(account: &signer): vector<u8> acquires DuelResult {
+    public fun get_result(account: &signer): (String, String) acquires DuelResult {
         let result = borrow_global<DuelResult>(signer::address_of(account));
         (result.computer_selection, result.duel_result)
     }

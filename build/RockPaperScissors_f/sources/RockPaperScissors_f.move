@@ -1,4 +1,4 @@
-module metaschool::RockPaperScissors_f {
+module metaschool_1::RockPaperScissors_f {
     use std::string::{String,utf8};
     use std::signer;
     use aptos_framework::randomness;
@@ -19,6 +19,11 @@ module metaschool::RockPaperScissors_f {
             let result = DuelResult { computer_selection: utf8(b"New Game Created") , duel_result:utf8(b"Game not yet played")};
             move_to(account, result);
         }
+    }
+
+    public fun get_result(account: &signer): (String, String) acquires DuelResult {
+        let result = borrow_global<DuelResult>(signer::address_of(account));
+        (result.computer_selection, result.duel_result)
     }
 
     #[randomness]
@@ -44,7 +49,7 @@ module metaschool::RockPaperScissors_f {
         let computer_selection = &result.computer_selection;
 
         if (user_selection == *computer_selection) {
-            result.duel_result = utf8(b"Draw");
+            result.duel_result = utf8(b"Draw"); // Draw
         } else if ((user_selection == utf8(b"Rock") && *computer_selection == utf8(b"Scissors")) ||
                    (user_selection == utf8(b"Paper") && *computer_selection == utf8(b"Rock")) ||
                    (user_selection == utf8(b"Scissors") && *computer_selection == utf8(b"Paper"))) {

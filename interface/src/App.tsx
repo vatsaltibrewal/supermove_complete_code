@@ -71,6 +71,30 @@ const Display = styled.div`
   text-align: center;
 `;
 
+const DisplayComputerHeading = styled.div`
+  background-color: transparent;
+  color: black;
+  font-size: 25px;
+  padding: 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+const ResultBox = styled.div<{
+  color?: string;
+}>`
+  background-color: ${({ color }) => (color ? "#4CAF50" : "#f44336")};
+  color: white;
+  font-size: 25px;
+  padding: 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
 const ButtonGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -120,18 +144,11 @@ const ToggleButton = styled.button<{ active: boolean }>`
 const App: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<string>("");
+  const [computerSelection, setComputerSelection] = useState<string>("");
   const [isActive, setIsActive] = useState<boolean>(false);
   const { account, connected, signAndSubmitTransaction } = useWallet();
   const [transactionInProgress, setTransactionInProgress] =
     useState<boolean>(false);
-
-    // const enterView = () => {
-    //   return (
-    //     <CenteredWrapper>
-    //           <h1>Enter your move</h1>
-    //     </CenteredWrapper>
-    //   );
-    // }
 
     const toggleActiveState = async () => {
       setIsActive(!isActive);
@@ -174,7 +191,8 @@ const App: React.FC = () => {
           });
   
           console.log(resultData);
-          setResult(resultData.result.toString());
+          setResult(resultData.duel_result.toString());
+          setComputerSelection(resultData.computer_selection.toString())
         } catch (error) {
           console.error(error);
         } finally {
@@ -189,8 +207,7 @@ const App: React.FC = () => {
           {isActive ? "Stop Game" : "Start Game"}
         </ToggleButton>
         <GameWrapper>
-          {!result && <Display>{input || "Your Move"}</Display>}
-          {result && <Display>{result}</Display>}
+          {<Display>{input || "Your Move"}</Display>}
           <ButtonGrid>
             <Button
               color="#FF6663"
@@ -222,6 +239,14 @@ const App: React.FC = () => {
               Scissor
             </OperationButton>    
           </ButtonGrid>
+        </GameWrapper><br></br><br></br>
+        <GameWrapper> 
+          <DisplayComputerHeading>
+          {/* <p>Computer Move</p> */}
+            {!computerSelection && <Display>{computerSelection || "Computer Move"}</Display>}
+            {computerSelection && <Display>{computerSelection}</Display>}
+          </DisplayComputerHeading>
+            {result && <ResultBox>{result}</ResultBox>}
         </GameWrapper>
       </CenteredWrapper>
     );
@@ -240,8 +265,8 @@ const App: React.FC = () => {
       <WalletWrapper>
         <WalletSelector />
       </WalletWrapper>
-      {/* {connected ? connectedView() : notConnectedView()} */}
-      {connectedView()}
+      {connected ? connectedView() : notConnectedView()}
+      {/* {connectedView()} */}
     </WindowWrapper>
   );
 };

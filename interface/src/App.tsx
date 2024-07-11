@@ -92,7 +92,8 @@ const DisplayHeading = styled.div`
 const ResultBox = styled.div<{
   color?: string;
 }>`
-  background-color: #4CAF50;
+  background-color: #4caf50;
+  width: 500px;
   color: white;
   font-size: 24px;
   padding: 20px;
@@ -100,6 +101,7 @@ const ResultBox = styled.div<{
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-weight: bold;
+  margin-top: 20px;
   text-align: center;
 `;
 
@@ -149,6 +151,38 @@ const ToggleButton = styled.button<{ active: boolean }>`
   }
 `;
 
+const ComputerButtonGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ComputerButton = styled.div<{
+  color?: string;
+  wide?: boolean;
+  disabled?: boolean;
+}>`
+  background-color: ${({ color, disabled }) =>
+    disabled ? "#c0c0c0" : color || "#d0d0d0"};
+  color: ${({ disabled }) => (disabled ? "#888888" : "black")};
+  font-size: 24px;
+  padding: 20px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  grid-column: ${({ wide }) => (wide ? "span 2" : "span 1")};
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const ComputerOperationButton = styled(ComputerButton)`
+  background-color: ${({ disabled }) => (disabled ? "#c0c0c0" : "#ff9500")};
+  color: ${({ disabled }) => (disabled ? "#888888" : "white")};
+`;
+
 const App: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<string>("");
@@ -159,12 +193,18 @@ const App: React.FC = () => {
     useState<boolean>(false);
 
   const handleOperationClick = async (operation: string) => {
-    if (operation === "Rock" || operation === "Paper" || operation === "Scissors") {
+    setResult("");
+    setComputerSelection("");
+    console.log(operation);
+    if (
+      operation === "Rock" ||
+      operation === "Paper" ||
+      operation === "Scissors"
+    ) {
       setInput(` ${operation} `);
       try {
         if (!account) return;
-        let functionName = "duel"
-
+        console.log(operation);
         setTransactionInProgress(true);
 
         const payload: InputTransactionData = {
@@ -173,21 +213,19 @@ const App: React.FC = () => {
             functionArguments: [operation],
           },
         };
-
+        console.log("called duel");
         const response = await signAndSubmitTransaction(payload);
-
-        console.log(response);
 
         const resultData = await client.getAccountResource({
           accountAddress: account?.address,
           resourceType: `${moduleAddress}::${moduleName}::DuelResult`,
         });
-
         console.log(resultData);
         setResult(resultData.duel_result.toString());
-        setComputerSelection(resultData.computer_selection.toString())
+        setComputerSelection(resultData.computer_selection.toString());
         console.log(result);
         console.log(computerSelection);
+
       } catch (error) {
         console.error(error);
       } finally {
@@ -209,10 +247,12 @@ const App: React.FC = () => {
           functionArguments: [],
         },
       };
-
       const response = await signAndSubmitTransaction(payload);
       console.log(response);
     }
+    setInput("")
+    setResult("");
+    setComputerSelection("");
   };
 
   const connectedView = () => {
@@ -222,54 +262,75 @@ const App: React.FC = () => {
           {isActive ? "Stop Game" : "Start Game"}
         </ToggleButton>
         <InternalWrapper>
-        <GameWrapper>
-        <DisplayHeading>
-          {/* <p>Your Move</p> */}
-          {<Display>{input || "Select Your Move"}</Display>}
-        </DisplayHeading>
-          <ButtonGrid>
-            <Button
-              color="#FF6663"
-              onClick={() => {
-                setInput("");
-                setResult("");
-                setComputerSelection("");
-              }}
-              disabled={!isActive}
-            >
-              Clear
-            </Button>
-            {/* <Button color="#FF33FF" onClick={() => setInput(input + '  ')} disabled={!isActive}>^</Button> */}
-            <OperationButton
-              onClick={() => {handleOperationClick("Rock");}}
-              disabled={!isActive}
-            >
-              Rock
-            </OperationButton>
-            <OperationButton
-              onClick={() => handleOperationClick("Paper")}
-              disabled={!isActive}
-            >
-              Paper
-            </OperationButton>
-            <OperationButton
-              onClick={() => handleOperationClick("Scissors")}
-              disabled={!isActive}
-            >
-              Scissors
-            </OperationButton>    
-          </ButtonGrid>
-        </GameWrapper>{"          "}
-        <GameWrapper> 
-          <DisplayHeading>
-          {/* <p>Computer Move</p> */}
-            {!computerSelection && <Display>{computerSelection || "Computer Move"}</Display>}
-            {computerSelection && <Display>{computerSelection}</Display>}
-          </DisplayHeading>
-          {!result && <ResultBox>{result || "Game Result"}</ResultBox>}
-          {result && <ResultBox>You {result}</ResultBox>}
-        </GameWrapper>
+          <GameWrapper>
+            <DisplayHeading>
+              {/* <p>Your Move</p> */}
+              {<Display>{input || "Select Your Move"}</Display>}
+            </DisplayHeading>
+            <ButtonGrid>
+              <Button
+                color="#FF6663"
+                onClick={() => {
+                  setInput("");
+                  setResult("");
+                  setComputerSelection("");
+                }}
+                disabled={!isActive}
+              >
+                Clear
+              </Button>
+              {/* <Button color="#FF33FF" onClick={() => setInput(input + '  ')} disabled={!isActive}>^</Button> */}
+              <OperationButton
+                onClick={() => {
+                  handleOperationClick("Rock");
+                }}
+                disabled={!isActive}
+              >
+                Rock
+              </OperationButton>
+              <OperationButton
+                onClick={() => handleOperationClick("Paper")}
+                disabled={!isActive}
+              >
+                Paper
+              </OperationButton>
+              <OperationButton
+                onClick={() => handleOperationClick("Scissors")}
+                disabled={!isActive}
+              >
+                Scissors
+              </OperationButton>
+            </ButtonGrid>
+          </GameWrapper>
+          {"          "}
+          <GameWrapper>
+            <DisplayHeading>
+              {/* <p>Computer Move</p> */}
+              {!computerSelection && (
+                <Display>{computerSelection || "Computer Move"}</Display>
+              )}
+              {computerSelection && <Display>{computerSelection}</Display>}
+            </DisplayHeading>
+            <ComputerButtonGrid>
+              <ComputerOperationButton disabled={!isActive}>
+                Rock
+              </ComputerOperationButton>
+              <ComputerOperationButton disabled={!isActive}>
+                Paper
+              </ComputerOperationButton>
+              <ComputerOperationButton disabled={!isActive}>
+                Scissors
+              </ComputerOperationButton>
+            </ComputerButtonGrid>
+          </GameWrapper>
         </InternalWrapper>
+        {!result && <ResultBox>{result || "Game Result"}</ResultBox>}
+        {result && result != "Game not yet played" && result != "Draw" && (
+          <ResultBox>You {result}</ResultBox>
+        )}
+        {result && (result == "Game not yet played" || result == "Draw") && (
+          <ResultBox>{result}</ResultBox>
+        )}
       </CenteredWrapper>
     );
   };

@@ -1,11 +1,13 @@
 [package]
-name = "Rock-Paper-Scissors"
+name = "RockPaperScissors_l"
 version = "1.0.0"
 authors = []
-
 [addresses]
-metaschool_1 = "0xd047c2d7ef8aadc9fbfa96deb516ce33d7179a79b7f130fbe8d0f9fcea3208a8"
+metaschool = "0xd047c2d7ef8aadc9fbfa96deb516ce33d7179a79b7f130fbe8d0f9fcea3208a8"
 std = "0x1"
-
-[dependencies]
-AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "testnet" }
+[dev-addresses]
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "mainnet"
+subdir = "aptos-move/framework/aptos-framework"
+[dev-dependencies]

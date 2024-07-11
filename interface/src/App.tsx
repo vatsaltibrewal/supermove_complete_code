@@ -169,7 +169,7 @@ const App: React.FC = () => {
 
         const payload: InputTransactionData = {
           data: {
-            function: `${moduleAddress}::${moduleName}::${functionName}`,
+            function: `${moduleAddress}::${moduleName}::duel`,
             functionArguments: [operation],
           },
         };
@@ -186,6 +186,8 @@ const App: React.FC = () => {
         console.log(resultData);
         setResult(resultData.duel_result.toString());
         setComputerSelection(resultData.computer_selection.toString())
+        console.log(result);
+        console.log(computerSelection);
       } catch (error) {
         console.error(error);
       } finally {
@@ -231,6 +233,7 @@ const App: React.FC = () => {
               onClick={() => {
                 setInput("");
                 setResult("");
+                setComputerSelection("");
               }}
               disabled={!isActive}
             >
@@ -239,19 +242,19 @@ const App: React.FC = () => {
             {/* <Button color="#FF33FF" onClick={() => setInput(input + '  ')} disabled={!isActive}>^</Button> */}
             <OperationButton
               onClick={() => {handleOperationClick("Rock");}}
-              disabled={!isActive || transactionInProgress}
+              disabled={!isActive}
             >
               Rock
             </OperationButton>
             <OperationButton
               onClick={() => handleOperationClick("Paper")}
-              disabled={!isActive || transactionInProgress}
+              disabled={!isActive}
             >
               Paper
             </OperationButton>
             <OperationButton
               onClick={() => handleOperationClick("Scissors")}
-              disabled={!isActive || transactionInProgress}
+              disabled={!isActive}
             >
               Scissors
             </OperationButton>    
@@ -261,9 +264,10 @@ const App: React.FC = () => {
           <DisplayHeading>
           {/* <p>Computer Move</p> */}
             {!computerSelection && <Display>{computerSelection || "Computer Move"}</Display>}
+            {computerSelection && <Display>{computerSelection}</Display>}
           </DisplayHeading>
           {!result && <ResultBox>{result || "Game Result"}</ResultBox>}
-            {result && <ResultBox>{result}</ResultBox>}
+          {result && <ResultBox>You {result}</ResultBox>}
         </GameWrapper>
         </InternalWrapper>
       </CenteredWrapper>

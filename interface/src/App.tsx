@@ -135,7 +135,7 @@ const OperationButton = styled(Button)`
 `;
 
 const ToggleButton = styled.button<{ active: boolean }>`
-  background-color: ${({ active }) => (active ? "#4CAF50" : "#f44336")};
+  background-color: ${({ active }) => (active ? "#f44336" : "#4CAF50")};
   color: white;
   font-size: 18px;
   padding: 10px 20px;
@@ -223,7 +223,7 @@ const App: React.FC = () => {
         <GameWrapper>
         <DisplayHeading>
           {/* <p>Your Move</p> */}
-          {<Display>{input || "Your Move"}</Display>}
+          {<Display>{input || "Select Your Move"}</Display>}
         </DisplayHeading>
           <ButtonGrid>
             <Button

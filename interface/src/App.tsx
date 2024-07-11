@@ -58,6 +58,14 @@ const GameWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 20px;
+`;
+
+const InternalWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Display = styled.div`
@@ -71,27 +79,27 @@ const Display = styled.div`
   text-align: center;
 `;
 
-const DisplayComputerHeading = styled.div`
+const DisplayHeading = styled.div`
   background-color: transparent;
   color: black;
-  font-size: 25px;
-  padding: 20px;
-  border-radius: 15px;
+  font-size: 20px;
+  padding: 5px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   text-align: center;
 `;
 
 const ResultBox = styled.div<{
   color?: string;
 }>`
-  background-color: "#4CAF50";
+  background-color: #4CAF50;
   color: white;
-  font-size: 25px;
+  font-size: 24px;
   padding: 20px;
+  border: none;
   border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-weight: bold;
-  margin-bottom: 20px;
   text-align: center;
 `;
 
@@ -211,8 +219,12 @@ const App: React.FC = () => {
         <ToggleButton active={isActive} onClick={toggleActiveState}>
           {isActive ? "Stop Game" : "Start Game"}
         </ToggleButton>
+        <InternalWrapper>
         <GameWrapper>
+        <DisplayHeading>
+          {/* <p>Your Move</p> */}
           {<Display>{input || "Your Move"}</Display>}
+        </DisplayHeading>
           <ButtonGrid>
             <Button
               color="#FF6663"
@@ -244,15 +256,16 @@ const App: React.FC = () => {
               Scissors
             </OperationButton>    
           </ButtonGrid>
-        </GameWrapper><br></br><br></br>
+        </GameWrapper>{"          "}
         <GameWrapper> 
-          <DisplayComputerHeading>
+          <DisplayHeading>
           {/* <p>Computer Move</p> */}
             {!computerSelection && <Display>{computerSelection || "Computer Move"}</Display>}
-            {computerSelection && <Display>{computerSelection}</Display>}
-          </DisplayComputerHeading>
+          </DisplayHeading>
+          {!result && <ResultBox>{result || "Game Result"}</ResultBox>}
             {result && <ResultBox>{result}</ResultBox>}
         </GameWrapper>
+        </InternalWrapper>
       </CenteredWrapper>
     );
   };

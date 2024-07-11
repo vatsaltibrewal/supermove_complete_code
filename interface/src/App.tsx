@@ -91,10 +91,13 @@ const DisplayHeading = styled.div`
 
 const ResultBox = styled.div<{
   color?: string;
+  wide?: boolean;
+  disabled?: boolean;
 }>`
-  background-color: #4caf50;
+  background-color: ${({ color, disabled }) =>
+    disabled ? "#c0c0c0" : color || "#4CAF50"};
   width: 500px;
-  color: white;
+  color: ${({ disabled }) => (disabled ? "#888888" : "black")};
   font-size: 24px;
   padding: 20px;
   border: none;
@@ -324,12 +327,12 @@ const App: React.FC = () => {
             </ComputerButtonGrid>
           </GameWrapper>
         </InternalWrapper>
-        {!result && <ResultBox>{result || "Game Result"}</ResultBox>}
+        {!result && <ResultBox disabled={!isActive}>{result || "Game Result"}</ResultBox>}
         {result && result != "Game not yet played" && result != "Draw" && (
-          <ResultBox>You {result}</ResultBox>
+          <ResultBox disabled={!isActive}>You {result}</ResultBox>
         )}
         {result && (result == "Game not yet played" || result == "Draw") && (
-          <ResultBox>{result}</ResultBox>
+          <ResultBox disabled={!isActive}>{result}</ResultBox>
         )}  
       </CenteredWrapper>
     );

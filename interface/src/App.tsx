@@ -330,7 +330,7 @@ const App: React.FC = () => {
         )}
         {result && (result == "Game not yet played" || result == "Draw") && (
           <ResultBox>{result}</ResultBox>
-        )}
+        )}  
       </CenteredWrapper>
     );
   };

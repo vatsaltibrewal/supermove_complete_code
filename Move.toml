@@ -1,9 +1,9 @@
 [package]
-name = "RockPaperScissors_l"
+name = "RockPaperScissors_01"
 version = "1.0.0"
 authors = []
 [addresses]
-metaschool = "0xd047c2d7ef8aadc9fbfa96deb516ce33d7179a79b7f130fbe8d0f9fcea3208a8"
+metaschool = "Replace_with_your_wallet_address_🔑"
 std = "0x1"
 [dev-addresses]
 [dependencies.AptosFramework]
